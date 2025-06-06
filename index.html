@@ -7,65 +7,113 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <header>
-        <h1>Veil of the Cosmos</h1>
-        <div id="cosmic-god-display" class="info-panel">
-            <h2>Active God: <span id="god-name">None</span></h2>
-            <p id="god-effect"></p>
-        </div>
-    </header>
 
-    <main class="game-container">
-        <aside class="left-panel">
-            <div id="resource-display" class="info-panel">
-                <h3>Resources</h3>
-                <p>Sanity: <span id="sanity-value">10</span></p>
-                <p>Knowledge: <span id="knowledge-value">0</span></p>
-                <p>Influence: <span id="influence-value">0</span></p>
-                <p>Stability: <span id="stability-value">0</span></p>
+    <!-- Start Screen for Adept Selection -->
+    <div id="start-screen">
+        <div class="start-content">
+            <h1>Veil of the Cosmos</h1>
+            <p>The veil thins. Choose your path into the unknown.</p>
+            <div id="adept-selection">
+                <div class="adept-choice" data-adept="Scholar">
+                    <h3>The Scholar</h3>
+                    <p>Starts with 3 Knowledge. Seeks to understand the chaos.</p>
+                </div>
+                <div class="adept-choice" data-adept="Mystic">
+                    <h3>The Mystic</h3>
+                    <p>Starts with 2 Influence and 1 Stability. Seeks to endure it.</p>
+                </div>
+                <div class="adept-choice" data-adept="Archivist">
+                    <h3>The Archivist</h3>
+                    <p>Starts with an extra card and can mulligan their starting hand once.</p>
+                </div>
             </div>
-
-            <div id="action-panel" class="info-panel">
-                <h3>Actions</h3>
-                <button id="play-card-btn" disabled>Play Selected Card</button>
-                <button id="activate-card-btn" disabled>Activate Selected Card</button>
-                <button id="manage-resources-btn">Manage Resources</button>
-                <button id="end-turn-btn" disabled>End Turn</button>
-            </div>
-
-            <div id="game-messages" class="info-panel">
-                <h3>Log</h3>
-                <ul id="message-list">
-                    <li>Welcome to Veil of the Cosmos!</li>
-                </ul>
-            </div>
-        </aside>
-
-        <section id="game-board" class="board-grid"></section>
-
-        <div id="player-hand" class="info-panel">
-            <h3>Your Hand</h3>
-            <div id="hand-cards">
-                <!-- Cards will be dynamically inserted here -->
-            </div>
-        </div>
-    </main>
-
-    <!-- Modals for dialogs -->
-    <div id="resource-modal" class="modal">
-        <div class="modal-content">
-            <h2>Manage Resources</h2>
-            <p>Spend 2 Knowledge or 2 Influence to gain 1 Sanity or 1 Stability.</p>
-            <div class="resource-options">
-                <button id="spend-knowledge-sanity-btn">Spend 2 Knowledge (1 Sanity)</button>
-                <button id="spend-influence-sanity-btn">Spend 2 Influence (1 Sanity)</button>
-                <button id="spend-knowledge-stability-btn">Spend 2 Knowledge (1 Stability)</button>
-                <button id="spend-influence-stability-btn">Spend 2 Influence (1 Stability)</button>
-            </div>
-            <button class="close-modal-btn">Close</button>
+            <button id="start-game-btn" disabled>Confront the Veil</button>
         </div>
     </div>
 
+    <!-- Main Game UI (hidden initially) -->
+    <div id="game-ui" class="hidden">
+        <header>
+            <div id="cosmic-god-display" class="info-panel">
+                <h2>Active God: <span id="god-name">None</span></h2>
+                <p id="god-effect"></p>
+            </div>
+        </header>
+
+        <main class="game-container">
+            <!-- Left Panel for Resources and Actions -->
+            <aside class="left-panel">
+                <div id="resource-display" class="info-panel">
+                    <h3>Vitals & Resources</h3>
+                    <p>Sanity: <span id="sanity-value">10</span></p>
+                    <p>Knowledge: <span id="knowledge-value">0</span></p>
+                    <p>Influence: <span id="influence-value">0</span></p>
+                    <p>Stability: <span id="stability-value">0</span></p>
+                </div>
+
+                <div id="action-panel" class="info-panel">
+                    <h3>Actions (<span id="actions-remaining">2</span>)</h3>
+                    <button id="end-turn-btn">End Turn</button>
+                </div>
+
+                <div id="game-messages" class="info-panel">
+                    <h3>Log</h3>
+                    <ul id="message-list"></ul>
+                </div>
+            </aside>
+
+            <!-- Center Panel for the Game Board -->
+            <section id="game-board-container">
+                 <div id="game-board" class="board-grid"></div>
+            </section>
+
+            <!-- Right Panel for Events and Card Inspector -->
+            <aside class="right-panel">
+                <div id="event-card-display" class="info-panel">
+                    <h3>Current Event</h3>
+                    <div id="event-card-content" class="card-display">
+                        <p class="placeholder-text">The cosmos is quiet... for now.</p>
+                    </div>
+                </div>
+
+                <div id="card-inspector" class="info-panel">
+                    <h3>Card Inspector</h3>
+                    <div id="inspector-content" class="card-display">
+                        <p class="placeholder-text">Select a card to inspect it.</p>
+                    </div>
+                </div>
+            </aside>
+        </main>
+
+        <!-- Player Hand at the Bottom -->
+        <footer id="player-hand-container">
+            <h3>Your Hand</h3>
+            <div id="hand-cards"></div>
+        </footer>
+    </div>
+
+    <!-- Modals and Overlays -->
+
+    <!-- Revelation Card Modal -->
+    <div id="revelation-modal" class="modal">
+        <div class="modal-content">
+            <h2 id="revelation-title">A Revelation!</h2>
+            <p id="revelation-text">You have uncovered a forbidden truth. The choice is yours.</p>
+            <div class="revelation-choices">
+                <button id="revelation-choice-a">Choice A</button>
+                <button id="revelation-choice-b">Choice B</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Game Over Screen -->
+    <div id="game-over-screen" class="modal">
+        <div class="modal-content">
+            <h2 id="game-over-title">The End</h2>
+            <p id="game-over-text">Your journey concludes.</p>
+            <button id="play-again-btn">Play Again</button>
+        </div>
+    </div>
 
     <script src="script.js"></script>
 </body>
