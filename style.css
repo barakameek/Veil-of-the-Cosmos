@@ -1,0 +1,426 @@
+/* General Body and Page Layout */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #1a1a2e; /* Dark background for cosmic theme */
+    color: #e0e0e0; /* Light text color */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    box-sizing: border-box; /* Include padding and border in element's total width and height */
+}
+
+header {
+    background-color: #0f0a1f; /* Darker header */
+    padding: 20px;
+    text-align: center;
+    border-bottom: 2px solid #5a2a62; /* A subtle cosmic border */
+    margin-bottom: 20px;
+}
+
+header h1 {
+    margin: 0;
+    color: #ffd700; /* Gold-like color for title */
+    font-size: 2.5em;
+    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+}
+
+.info-panel {
+    background-color: #2a2a4a; /* Slightly lighter dark panel */
+    border: 1px solid #4a4a7a;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px; /* Space between panels */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Cosmic God Display in Header */
+#cosmic-god-display {
+    max-width: 800px;
+    margin: 15px auto 0 auto;
+    text-align: left;
+}
+#cosmic-god-display h2 {
+    color: #a0a0ff; /* Light purple for god name */
+    margin-top: 0;
+    font-size: 1.5em;
+}
+#cosmic-god-display p {
+    font-style: italic;
+    font-size: 0.9em;
+    color: #c0c0c0;
+}
+
+
+/* Main Game Layout */
+.game-container {
+    display: flex;
+    flex-grow: 1; /* Allows it to take up available vertical space */
+    padding: 20px;
+    gap: 20px; /* Space between left panel, board, and hand */
+    flex-wrap: wrap; /* Allows panels to wrap on smaller screens */
+    justify-content: center; /* Center items when they wrap */
+}
+
+.left-panel {
+    flex: 0 0 250px; /* Fixed width for left panel */
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* Resource Display */
+#resource-display p {
+    margin: 5px 0;
+    font-size: 1.1em;
+}
+#resource-display span {
+    font-weight: bold;
+    color: #70a0ff; /* Blue for resource values */
+}
+
+/* Action Panel Buttons */
+#action-panel button {
+    display: block; /* Each button on its own line */
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    background-color: #6a0572; /* Deep purple button */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.2s ease;
+}
+
+#action-panel button:hover:not(:disabled) {
+    background-color: #8c0792;
+}
+
+#action-panel button:disabled {
+    background-color: #4a4a5a; /* Greyed out when disabled */
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+/* Game Message Log */
+#game-messages #message-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 200px; /* Limit height and add scrollbar */
+    overflow-y: auto;
+    font-size: 0.9em;
+}
+
+#game-messages #message-list li {
+    margin-bottom: 5px;
+    padding-bottom: 3px;
+    border-bottom: 1px dotted #3a3a6a;
+}
+#game-messages #message-list li:last-child {
+    border-bottom: none;
+}
+
+/* Game Board Grid */
+#game-board {
+    display: grid;
+    grid-template-columns: repeat(5, 100px); /* 5 columns, 100px wide */
+    grid-template-rows: repeat(5, 100px);    /* 5 rows, 100px tall */
+    gap: 5px; /* Space between grid cells */
+    background-color: #1a1a2e; /* Same as body to blend in */
+    border: 2px solid #5a2a62;
+    border-radius: 8px;
+    padding: 5px;
+    box-shadow: 0 0 15px rgba(90, 42, 98, 0.5); /* Glowing border */
+    flex-shrink: 0; /* Prevents board from shrinking */
+}
+
+.board-cell {
+    width: 100px;
+    height: 100px;
+    background-color: #3a3a5a; /* Default cell background */
+    border: 1px solid #5a5a8a;
+    border-radius: 4px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.8em;
+    color: #b0b0b0;
+    position: relative; /* For card placement */
+    cursor: pointer; /* Indicates it's clickable */
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.board-cell.origin {
+    background-color: #4a4a6a; /* Slightly different for origin */
+    border-color: #ffd700; /* Gold border for origin */
+}
+
+.board-cell.valid-placement {
+    border: 2px dashed #00ff00; /* Green dashed border for valid placement */
+    background-color: #4a6a4a;
+}
+.board-cell.valid-placement:hover {
+    background-color: #5a7a5a;
+}
+
+.board-cell.selected {
+    border: 3px solid #ff00ff; /* Magenta border for selected card */
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.7);
+}
+
+
+/* Player Hand */
+#player-hand {
+    flex: 1 1 300px; /* Flexible width, but minimum 300px */
+    max-height: 300px; /* Limit height for hand panel */
+    overflow-y: auto; /* Scroll if hand gets too big */
+    display: flex;
+    flex-direction: column;
+}
+
+#hand-cards {
+    display: flex;
+    flex-wrap: wrap; /* Allow cards to wrap to next line */
+    gap: 10px; /* Space between cards */
+    padding-top: 10px; /* Space between hand title and cards */
+    justify-content: center; /* Center cards in the hand area */
+}
+
+/* Card Styling (for cards in hand and on board) */
+.card {
+    width: 120px; /* Standard card width */
+    height: 160px; /* Standard card height */
+    background-color: #3a1a5a; /* Deep purple for cards */
+    border: 2px solid #7a4a9a; /* Lighter purple border */
+    border-radius: 8px;
+    padding: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Space content vertically */
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+    text-align: center;
+    position: relative; /* For internal elements if needed */
+}
+
+.card:hover {
+    transform: translateY(-5px); /* Lift on hover */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
+}
+
+.card.selected-in-hand {
+    border-color: #00ff00; /* Green border for selected card in hand */
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.7);
+    transform: scale(1.05);
+}
+
+.card-title {
+    font-weight: bold;
+    font-size: 1.1em;
+    color: #ffd700; /* Gold for card titles */
+    margin-bottom: 5px;
+}
+
+.card-type-aspect {
+    font-size: 0.8em;
+    color: #c0c0c0;
+    margin-bottom: 5px;
+}
+
+.card-flavor {
+    font-size: 0.7em;
+    font-style: italic;
+    color: #a0a0a0;
+    flex-grow: 1; /* Allow flavor text to take space */
+    overflow: hidden; /* Hide overflow if text is too long */
+    text-overflow: ellipsis; /* Add ellipsis for overflow */
+}
+
+.card-effects {
+    font-size: 0.75em;
+    color: #e0e0e0;
+    margin-top: 5px;
+    border-top: 1px dashed rgba(255, 255, 255, 0.2);
+    padding-top: 5px;
+}
+
+/* Specific Card Aspect Colors (subtle changes) */
+.card.chaos { border-color: #ff4500; } /* Orange-red */
+.card.order { border-color: #00bfff; } /* Deep sky blue */
+.card.void { border-color: #8a2be2; } /* Blue-violet */
+.card.life { border-color: #32cd32; } /* Lime green */
+
+
+/* Cards placed on the board */
+.board-cell .card {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%; /* Fill the cell */
+    height: 100%; /* Fill the cell */
+    padding: 5px; /* Adjust padding for smaller cell size */
+    border-radius: 4px; /* Match cell border radius */
+    box-shadow: none; /* Remove hover shadow */
+    cursor: default; /* No pointer cursor when on board */
+    transform: none; /* No lift on hover */
+    font-size: 0.6em; /* Smaller font on board */
+    overflow: hidden; /* Hide overflow */
+    text-align: left; /* Align text to left */
+}
+
+.board-cell .card .card-title {
+    font-size: 0.9em; /* Adjust for board size */
+    white-space: nowrap; /* Prevent title wrap */
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.board-cell .card .card-type-aspect,
+.board-cell .card .card-flavor,
+.board-cell .card .card-effects {
+    display: none; /* Hide these details when card is on board, or show minimal */
+    /* For a very minimal display you could show just type/aspect */
+}
+
+.board-cell .card.board-card-visible .card-type-aspect {
+    display: block; /* Show type/aspect if visible */
+    font-size: 0.7em;
+    margin-bottom: 0;
+}
+
+/* Modal Styling */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 100; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.7); /* Black w/ opacity */
+    align-items: center; /* Center content vertically */
+    justify-content: center; /* Center content horizontally */
+}
+
+.modal-content {
+    background-color: #2a2a4a;
+    margin: auto;
+    padding: 30px;
+    border: 1px solid #4a4a7a;
+    border-radius: 10px;
+    width: 80%; /* Could be responsive */
+    max-width: 500px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    text-align: center;
+}
+
+.modal-content h2 {
+    color: #ffd700;
+    margin-top: 0;
+    font-size: 1.8em;
+}
+
+.modal-content p {
+    margin-bottom: 20px;
+    color: #c0c0c0;
+}
+
+.modal-content .resource-options button {
+    background-color: #6a0572;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1.1em;
+    margin: 5px;
+    transition: background-color 0.2s ease;
+}
+
+.modal-content .resource-options button:hover {
+    background-color: #8c0792;
+}
+
+.modal-content .resource-options button:disabled {
+    background-color: #4a4a5a; /* Greyed out when disabled */
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.close-modal-btn {
+    background-color: #555;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.2s ease;
+}
+
+.close-modal-btn:hover {
+    background-color: #777;
+}
+
+/* Utility Class for hiding elements */
+.hidden {
+    display: none !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+    .game-container {
+        flex-direction: column;
+        align-items: center;
+    }
+    .left-panel, #game-board, #player-hand {
+        flex: none; /* Remove flex sizing */
+        width: 100%; /* Full width */
+        max-width: 700px; /* Max width for readability */
+    }
+    #game-board {
+        margin: 20px 0; /* Add vertical margin */
+    }
+    #player-hand #hand-cards {
+        justify-content: center; /* Center cards in hand */
+    }
+}
+
+@media (max-width: 600px) {
+    header h1 {
+        font-size: 1.8em;
+    }
+    .game-container {
+        padding: 10px;
+    }
+    .board-cell, .board-cell .card {
+        width: 70px; /* Smaller cells for smaller screens */
+        height: 70px;
+    }
+    #game-board {
+        grid-template-columns: repeat(5, 70px);
+        grid-template-rows: repeat(5, 70px);
+        gap: 3px;
+        padding: 3px;
+    }
+    .card {
+        width: 90px;
+        height: 120px;
+    }
+    .card-title {
+        font-size: 1em;
+    }
+    .card-type-aspect, .card-flavor, .card-effects {
+        font-size: 0.6em;
+    }
+    .modal-content {
+        width: 95%;
+        padding: 15px;
+    }
+}
