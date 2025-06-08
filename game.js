@@ -344,5 +344,5 @@ document.addEventListener('DOMContentLoaded', () => {
         render();
     }
 
-f    init();
+    init();
 });
