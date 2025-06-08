@@ -248,3 +248,26 @@ h1, h2, h3, h4 {
 #game-log p {
     margin-bottom: 5px;
 }
+
+.button-group {
+    display: flex;
+    gap: 10px;
+}
+
+#gather-button {
+    width: 100%;
+    padding: 15px;
+    font-family: 'Cinzel', serif;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: var(--text-color);
+    background-color: var(--faction-civilization); /* A different color to distinguish it */
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#gather-button:hover {
+    background-color: #c8a95a;
+}
