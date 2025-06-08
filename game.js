@@ -93,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
         playerHand: [],
         worldGrid: Array(20).fill(null), // 5x4 grid
         selectedCard: null,
+        hasTakenTurnAction: false,
         turn: 1
     };
 
@@ -102,6 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const awakeningValueEl = document.getElementById('awakening-value');
     const gameLogEl = document.getElementById('game-log');
     const endTurnButton = document.getElementById('end-turn-button');
+    const gatherButton = document.getElementById('gather-button');
     // Resource display elements
     const aegisEl = document.getElementById('aegis-value');
     const productionEl = document.getElementById('production-value');
@@ -164,10 +166,9 @@ document.addEventListener('DOMContentLoaded', () => {
     /**
      * Creates an HTML element for a card
      * @param {object} cardData - The card's data from the database
-     * @param {boolean} isHandCard - If true, adds hand-specific listeners
      * @returns {HTMLElement} - The generated card element
      */
-    function createCardElement(cardData, isHandCard = true) {
+    function createCardElement(cardData) {
         const cardEl = document.createElement('div');
         cardEl.classList.add('card');
         cardEl.id = `card-${cardData.id}`;
@@ -191,12 +192,13 @@ document.addEventListener('DOMContentLoaded', () => {
     /**
      * Adds a message to the game log
      * @param {string} message - The text to log
-     * @param {string} type - 'info' (default) or 'error' for styling
+     * @param {string} type - 'info' (default), 'error', or 'success' for styling
      */
     function logMessage(message, type = 'info') {
         const p = document.createElement('p');
         p.textContent = message;
-        p.style.color = type === 'error' ? 'var(--highlight-color)' : 'var(--text-color)';
+        if (type === 'error') p.style.color = 'var(--highlight-color)';
+        if (type === 'success') p.style.color = 'var(--faction-civilization)';
         gameLogEl.prepend(p);
     }
     
@@ -223,11 +225,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const cardData = cardDatabase[cardId];
 
         if (gameState.selectedCard && gameState.selectedCard.index === handIndex) {
-            // Deselect card
             gameState.selectedCard = null;
             logMessage('Card deselected.');
         } else {
-            // Select card
             gameState.selectedCard = { index: handIndex, data: cardData };
             logMessage(`Selected ${cardData.name}. Click an empty grid cell to play.`);
         }
@@ -241,28 +241,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const cellIndex = parseInt(cellEl.dataset.cellIndex);
 
-        // Check if a card is selected and the cell is empty
+        if (gameState.hasTakenTurnAction) {
+            logMessage('You have already taken your action for this turn.', 'error');
+            return;
+        }
+
         if (gameState.selectedCard && !gameState.worldGrid[cellIndex]) {
             const { index, data } = gameState.selectedCard;
 
-            // Check if player can afford the card
             if (gameState.resources.production >= data.cost) {
-                // Pay cost
                 gameState.resources.production -= data.cost;
                 logMessage(`Paid ${data.cost} Production.`);
                 
-                // Place card on grid
-                gameState.worldGrid[cellIndex] = { ...data }; // Place a copy
-                
-                // Remove card from hand
+                gameState.worldGrid[cellIndex] = { ...data };
                 gameState.playerHand.splice(index, 1);
                 
-                // Trigger OnPlay effect
                 data.onPlay(cellIndex, gameState);
 
-                // Clear selection and re-render
                 gameState.selectedCard = null;
-                logMessage(`Played ${data.name}.`, 'success');
+                gameState.hasTakenTurnAction = true;
+                gatherButton.disabled = true;
+                
+                logMessage(`Played ${data.name}. End your turn when ready.`, 'success');
                 render();
 
             } else {
@@ -271,16 +271,36 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
     
+    // Handle the Gather Resources button
+    gatherButton.addEventListener('click', () => {
+        if (gameState.hasTakenTurnAction) {
+            logMessage('You have already taken your action for this turn.', 'error');
+            return;
+        }
+    
+        const gainedProduction = 2;
+        const gainedFaith = 1;
+        gameState.resources.production += gainedProduction;
+        gameState.resources.faith += gainedFaith;
+
+        gameState.hasTakenTurnAction = true;
+        gatherButton.disabled = true;
+
+        logMessage(`You consolidate power, gaining ${gainedProduction} Production and ${gainedFaith} Faith. End your turn.`, 'success');
+        render();
+    });
+
     // Handle the End Turn button
     endTurnButton.addEventListener('click', () => {
         logMessage(`--- End of Turn ${gameState.turn} ---`);
         gameState.turn++;
 
-        // 1. Advance Awakening Track
+        gameState.hasTakenTurnAction = false;
+        gatherButton.disabled = false;
+
         gameState.awakening++;
         logMessage('The world groans... Awakening advances.');
 
-        // 2. Simple Blight mechanic for demo: 10% chance to blight a random card
         if (Math.random() < 0.20 && gameState.worldGrid.some(c => c)) {
             let attempts = 0;
             while(attempts < 20) {
@@ -296,11 +316,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
 
-        // 3. Draw a new card
         drawCard();
         logMessage('You draw a new Location card.');
 
-        // 4. Check for game over
         if (gameState.awakening >= 20) {
             document.body.innerHTML = `<h1 style="color:var(--highlight-color); text-align:center; padding-top: 40vh; font-family: 'Cinzel', serif;">THE GOD HAS AWAKENED.</h1>`;
         } else {
@@ -319,14 +337,12 @@ document.addEventListener('DOMContentLoaded', () => {
             worldGridEl.appendChild(cell);
         }
 
-        // Draw starting hand
         drawCard();
         drawCard();
         drawCard();
 
-        // Initial render
         render();
     }
 
-    init(); // Start the game!
+f    init();
 });
